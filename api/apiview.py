@@ -46,6 +46,9 @@ class Register_api(APIView):
 
 
 class Login_api(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
     def post(self, request, formate=None):
         serializer = Login_serializers(data=request.data)
         if serializer.is_valid(raise_exception=True):
