@@ -14,7 +14,7 @@ class Cities(models.Model):
     popular = models.CharField(max_length=100)
 
     def __str__(self) -> str:
-        return str(self.user)
+        return str(self.city_name)
 
 
 class State(models.Model):
@@ -24,6 +24,9 @@ class State(models.Model):
     food = models.CharField(max_length=100)
     cities = models.ManyToManyField(Cities)
     # country = models.ForeignKey(Country, on_delete=models.SET_NULL, null=True)
+
+    def __str__(self):
+        return self.state_name
 
     def cities_data(self):
         return ",".join([str(p) for p in self.cities.all()])
@@ -37,3 +40,11 @@ class Country(models.Model):
 
     def __str__(self) -> str:
         return str(self.user)
+
+
+class Person_info(models.Model):
+    name = models.CharField(max_length=100)
+    email = models.EmailField(max_length=100)
+    age = models.IntegerField()
+    city = models.CharField(max_length=100)
+    country = models.CharField(max_length=100)
