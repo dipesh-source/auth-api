@@ -91,8 +91,12 @@ class Changepassword_api(APIView):
             data=request.data, context={"user": request.user}
         )
         if serializer.is_valid(raise_exception=True):
+<<<<<<< HEAD
             return Response(
                 {"data": "Password Changed Successfully"},
                 status=status.HTTP_201_CREATED,
             )
+=======
+            return Response({'data':'Password Changed Successfully'}, status=status.HTTP_201_CREATED)
+>>>>>>> origin/master
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
