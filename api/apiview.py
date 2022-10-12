@@ -3,7 +3,11 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate, login, logout
-from .serializers import Register_serializers, Changepassword_serializers, Login_serializers
+from .serializers import (
+    Register_serializers,
+    Changepassword_serializers,
+    Login_serializers,
+)
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
@@ -46,28 +50,49 @@ class Register_api(APIView):
 
 
 class Login_api(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
     def post(self, request, formate=None):
         serializer = Login_serializers(data=request.data)
         if serializer.is_valid(raise_exception=True):
-            email = serializer.data.get('email')
-            password = serializer.data.get('password')
+            email = serializer.data.get("email")
+            password = serializer.data.get("password")
             user = authenticate(email=email, password=password)
             if user is not None:
                 token = get_tokens_for_user(user)
-                return Response({'data':'Login success', 'token':token}, status=status.HTTP_200_OK)
+                return Response(
+                    {"data": "Login success", "token": token}, status=status.HTTP_200_OK
+                )
             else:
-                return Response({'errors':{'non_fields_errors':['email or password wrong, check again']}})
+                return Response(
+                    {
+                        "errors": {
+                            "non_fields_errors": [
+                                "email or password wrong, check again"
+                            ]
+                        }
+                    }
+                )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-'''
+
+"""
     User change password APIView
-'''
+"""
+
+
 class Changepassword_api(APIView):
     permission_classes = [IsAuthenticated]
     authentication_classes = [JWTAuthentication]
 
     def post(self, request, formate=None):
-        serializer = Changepassword_serializers(data=request.data, context={'user':request.user})
+        serializer = Changepassword_serializers(
+            data=request.data, context={"user": request.user}
+        )
         if serializer.is_valid(raise_exception=True):
-            return Response({'data':'Password Changed Successfully'}, status=status.HTTP_201_CREATED)
+            return Response(
+                {"data": "Password Changed Successfully"},
+                status=status.HTTP_201_CREATED,
+            )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
